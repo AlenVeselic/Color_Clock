@@ -1,0 +1,36 @@
+@charset "UTF-8";
+/**
+ * Description
+ * @authors Your Name (you@example.org)
+ * @date    2020-10-05 18:18:28
+ * @version 1.0.0
+ */
+
+ body {
+    -webkit-animation:name 30s infinite;
+    animation:name 30s infinite;   
+    }
+    
+    @-webkit-keyframes name
+    {
+    0% {background-color:cyan;}
+    25%{background-color:indianred;}
+    50% {background-color:darkorange;}
+    75%{background-color:cyan;}
+    100%{background-color:darkblue;}
+    }
+        @keyframes name {
+            0% {background-color:cyan;}
+            25%{background-color:indianred;}
+            50% {background-color:darkorange;}
+            75%{background-color:cyan;}
+            100%{background-color:darkblue;}
+        }
+
+p{
+    position: absolute;
+    left:50%;
+    top:30%;
+    color:white;
+    font-size: 200%;
+}
