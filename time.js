@@ -10,3 +10,10 @@ function display_ct(){
     document.getElementById('Clock').innerHTML = formatX;
     display_c();
 }
+
+function displayAName(){
+
+    Name=document.styleSheets.;
+
+    alert(Name[0].value);
+}

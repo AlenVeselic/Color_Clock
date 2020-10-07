@@ -7,20 +7,30 @@
  */
 
  body {
-    -webkit-animation:name 30s infinite;
-    animation:name 30s infinite;   
+    -webkit-animation-name:testDay;
+    -webkit-animation-duration:  30s;
+    -webkit-animation-iteration-count: infinite;
+
+
+    animation-name:testDay;
+    animation-duration:  30s;
+    animation-iteration-count:  infinite;
+    
+    
+
+
     }
     
-    @-webkit-keyframes name
+    @-webkit-keyframes testDay
     {
-    0% {background-color:cyan;}
+    0% {background-color:darkblue;}
     25%{background-color:indianred;}
     50% {background-color:darkorange;}
     75%{background-color:cyan;}
     100%{background-color:darkblue;}
     }
-        @keyframes name {
-            0% {background-color:cyan;}
+        @keyframes testDay {
+            0% {background-color:darkblue;}
             25%{background-color:indianred;}
             50% {background-color:darkorange;}
             75%{background-color:cyan;}
