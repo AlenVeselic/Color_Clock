@@ -20,6 +20,8 @@
 
 
     }
+
+    /* Full day test animation */
     
     @-webkit-keyframes testDay
     {
@@ -37,10 +39,148 @@
             100%{background-color:darkblue;}
         }
 
+        /*Sunrise animation*/
+
+        @-webkit-keyframes sunRise {
+            0% {
+                background-color: darkblue;
+            }
+            25% {
+                background-color:rgb(67, 67, 197);
+            }
+            50%{
+                background-color: cornflowerblue;
+            }
+            75% {
+                background-color: goldenrod;
+            }
+            100%{
+                background-color: rgb(117, 204, 175);
+            }
+            }
+                @keyframes sunRise {
+                    0% {
+                        background-color: darkblue;
+                    }
+                    25% {
+                        background-color:rgb(67, 67, 197);
+                    }
+                    50%{
+                        background-color: cornflowerblue;
+                    }
+                    75% {
+                        background-color: goldenrod;
+                    }
+                    100%{
+                        background-color: rgb(117, 204, 175);
+                    }
+                }
+
+        /*Sunset animation*/
+
+        @-webkit-keyframes sunSet {
+            0% {
+                background-color: rgb(60, 224, 170);;
+            }
+
+            25%{
+                background-color: darksalmon;
+            }
+
+            35%{
+                background-color: orangered;
+            }
+
+            45%{
+                background-color: rgb(209, 36, 36);
+            }
+
+            60% {
+                background-color: darkred;
+            }
+            100% {
+                background-color:darkblue;
+            }
+            }
+                @keyframes sunSet {
+                    0% {
+                        background-color: rgb(60, 224, 170);;
+                    }
+        
+                    25%{
+                        background-color: darksalmon;
+                    }
+        
+                    35%{
+                        background-color: orangered;
+                    }
+        
+                    45%{
+                        background-color: rgb(209, 36, 36);
+                    }
+        
+                    60% {
+                        background-color: darkred;
+                    }
+                    100% {
+                        background-color:darkblue;
+                    }
+                }
+
+        /* Daytime animation*/
+
+        @-webkit-keyframes dayTime {
+            0% {
+                background-color: rgb(60, 224, 170);
+            }
+            50% {
+                background-color: cadetblue;
+            }
+            100% {
+                background-color: rgb(60, 224, 170);
+            }
+        }
+            @keyframes dayTime {
+                0% {
+                    background-color: rgb(60, 224, 170);
+                }
+                50% {
+                    background-color: cadetblue;
+                }
+                100% {
+                    background-color:rgb(60, 224, 170);
+                }
+            }
+
+
+        /* Nighttime animation */
+    @-webkit-keyframes nightTime{
+        0%{background-color: darkBlue;}
+        50%{background-color:purple;}
+        75%{background-color: darkorchid;}
+        100%{background-color: darkblue;}
+
+    }   
+        @keyframes nightTime{
+
+            0%{background-color: darkBlue;}
+        50%{background-color:purple;}
+        75%{background-color: darkorchid;}
+        100%{background-color: darkblue;}
+
+        } 
+
 p{
     position: absolute;
     left:50%;
     top:30%;
     color:white;
     font-size: 200%;
+}
+
+p#act{
+    position: initial;
+}
+#debug p{
+    position: initial;
 }
