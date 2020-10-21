@@ -52,21 +52,30 @@ function animationSwitcher(cuTime){
     dayTime=new Date();
     sunsetTime=new Date();
     nightTime=new Date();
-    sunriseTime.setHours(16,39,0);
-    dayTime.setHours(16,40,0);
-    sunsetTime.setHours(16,38,0);
-    nightTime.setHours(16,39,0);
+    sunriseTime.setHours(19,17,30);
+    dayTime.setHours(19,18,00);
+    sunsetTime.setHours(19,18,30);
+    nightTime.setHours(00,00,00);
 
-    if(cuTime>=sunriseTime && cuTime < dayTime) switchAnimation('sunRise');
+    if(betweenTime(cuTime,sunriseTime,dayTime)) switchAnimation('sunRise');
 
-    if(cuTime==dayTime) switchAnimation('dayTime');
+    if(betweenTime(cuTime,dayTime,sunsetTime)) switchAnimation('dayTime');
 
-    if(cuTime==sunsetTime) switchAnimation('sunSet');
+    if(betweenTime(cuTime,sunsetTime,nightTime)) switchAnimation('sunSet');
 
-    if(cuTime==nightTime) switchAnimation('nightTime');
+    if(betweenTime(cuTime,nightTime,sunriseTime)) switchAnimation('nightTime');
 
 
 }
+
+function betweenTime(curDate,befTime,aftTime){
+
+    if(befTime <= curDate && curDate <= aftTime){
+        return true;
+    }
+   return false; 
+}
+
 
 
 function goAct(curTime){
@@ -80,6 +89,8 @@ function goAct(curTime){
     }else{
         document.getElementById('act').innerHTML="Now is not the time to act...";
     }
+
+    
 }
 
 
