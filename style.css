@@ -184,3 +184,53 @@ p#act{
 #debug p{
     position: initial;
 }
+
+p#dState{
+    position:initial;
+}
+
+.star{
+    background-color: yellow;
+
+    -webkit-animation-name:blinku;
+    -webkit-animation-duration:  10s;
+    -webkit-animation-iteration-count: infinite;
+
+
+    animation-name:blinku;
+    animation-duration:  10s;
+    animation-iteration-count:  infinite;
+
+}
+
+@-webkit-keyframes blinku{
+    0%{
+        background-color: rgba(255, 255, 0, 0);
+    }
+
+    50%{
+        background-color: yellow;
+    }
+
+    100%{
+        background-color: rgba(255, 255, 0, 0);
+    }
+
+}
+
+@keyframes blinku{
+
+    0%{
+        background-color: rgba(255, 255, 0, 0);
+    }
+
+    50%{
+        background-color: yellow;
+    }
+
+    100%{
+        background-color: rgba(255, 255, 0, 0);
+    }
+
+
+}

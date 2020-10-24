@@ -13,6 +13,9 @@
     
 <p id="Clock"></p>
 
+<button id="toggleDebug" onclick="displayDebug()">Debug</button>
+<p id="dState"></p>
+
 <div id="debug">
 <p>DEBUGGING AREA</p>
 <button onclick="displayAnimationName()"> Display current animation name</button>
@@ -22,9 +25,10 @@
 <button onclick="switchAnimation('testDay');">Switch to Full Day</button>
 <button onclick="switchAnimation('sunRise');">Switch to sunrise</button>
 <button onclick="switchAnimation('sunSet');">Switch to sunset</button>
-</div>
-<div ><p id="act"></p></div>
+<button onclick="spawnStar()">Twinkle twinkle</button>
 
+<div ><p id="act"></p></div>
+</div>
 <script src="time.js"></script>
 </body>
 </html>

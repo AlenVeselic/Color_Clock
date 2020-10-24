@@ -52,9 +52,9 @@ function animationSwitcher(cuTime){
     dayTime=new Date();
     sunsetTime=new Date();
     nightTime=new Date();
-    sunriseTime.setHours(19,17,30);
-    dayTime.setHours(19,18,00);
-    sunsetTime.setHours(19,18,30);
+    sunriseTime.setHours(21,13,0);
+    dayTime.setHours(21,13,30);
+    sunsetTime.setHours(21,14,30);
     nightTime.setHours(00,00,00);
 
     if(betweenTime(cuTime,sunriseTime,dayTime)) switchAnimation('sunRise');
@@ -93,4 +93,40 @@ function goAct(curTime){
     
 }
 
+function spawnStar(){
+
+    star=document.createElement("div");
+
+    star.classList.add("star");
+
+    star.style.position="absolute";
+    star.style.zIndex=-1;
+
+    star.style.animationDuration=Math.floor((Math.random()*30)+1)+"s";
+
+    getSize=Math.floor((Math.random() * 50) + 1);
+    star.style.width=getSize+"px";
+    star.style.height=getSize+"px";
+
+    xCoor=Math.floor((Math.random() * screen.availWidth) + 1);
+    yCoor=Math.floor((Math.random() * screen.availHeight) + 1);
+
+    star.style.left=xCoor+"px";
+    star.style.top=yCoor+"px";
+
+    document.body.appendChild(star);
+
+}
+
+function displayDebug(){
+    debugEl=document.getElementById("debug");
+    debugState=window.getComputedStyle(debugEl).getPropertyValue('display');
+    if(debugState=="none"){
+        debugEl.style.display="block";
+        document.getElementById("dState").innerHTML="enabled";
+    }else{
+        debugEl.style.display="none";
+        document.getElementById("dState").innerHTML="disabled";
+    } 
+}
 
