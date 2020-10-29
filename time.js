@@ -52,10 +52,16 @@ function animationSwitcher(cuTime){
     dayTime=new Date();
     sunsetTime=new Date();
     nightTime=new Date();
-    sunriseTime.setHours(21,13,0);
-    dayTime.setHours(21,13,30);
-    sunsetTime.setHours(21,14,30);
-    nightTime.setHours(00,00,00);
+    sunriseTime.setHours(11,57,0);
+    dayTime.setHours(11,57,30);
+    sunsetTime.setHours(11,58,0);
+    nightTime.setHours(11,58,30);
+
+    clockEnd=new Date();
+    clockEnd.setHours(24,0,0);
+
+    clockStart=new Date();
+    clockStart.setHours(0,0,0);
 
     if(betweenTime(cuTime,sunriseTime,dayTime)) switchAnimation('sunRise');
 
@@ -63,7 +69,7 @@ function animationSwitcher(cuTime){
 
     if(betweenTime(cuTime,sunsetTime,nightTime)) switchAnimation('sunSet');
 
-    if(betweenTime(cuTime,nightTime,sunriseTime)) switchAnimation('nightTime');
+    if(betweenTime(cuTime,nightTime,clockEnd)||(betweenTime(cuTime,clockStart,sunriseTime))) switchAnimation('nightTime');
 
 
 }
