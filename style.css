@@ -169,14 +169,20 @@
         100%{background-color: darkblue;}
 
         } 
-
 p{
+    color:white;
+    font-size:25px;
+    
+}
+
+#Clock{
     position: absolute;
     left:50%;
     top:30%;
-    color:white;
     font-size: 200%;
+    
 }
+
 
 p#act{
     position: initial;

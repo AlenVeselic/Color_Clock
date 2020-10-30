@@ -136,3 +136,25 @@ function displayDebug(){
     } 
 }
 
+function givCoor(){
+    
+    elem=document.getElementById("loc");
+
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(outputInfo);
+    }else{
+        elem.innerHTML="No coords 4 u";
+    }
+
+
+}
+
+function outputInfo(loc){
+
+    elem=document.getElementById("loc");
+
+    elem.innerHTML+="<br> lat:"+loc.coords.latitude;
+    elem.innerHTML+="<br> long:"+loc.coords.longitude;
+
+}
+
