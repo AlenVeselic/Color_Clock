@@ -142,6 +142,7 @@ function givCoor(){
 
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(outputInfo);
+        navigator.geolocation.getCurrentPosition(sunCalculation);
     }else{
         elem.innerHTML="No coords 4 u";
     }
@@ -156,5 +157,47 @@ function outputInfo(loc){
     elem.innerHTML+="<br> lat:"+loc.coords.latitude;
     elem.innerHTML+="<br> long:"+loc.coords.longitude;
 
+
 }
 
+document.getElementById("loc").onload=givCoor();
+
+months = {
+    "January": 31,
+    "Febrauary": 29,
+    "March": 31,
+    "April":30,
+    "May":31,
+    "June":30,
+    "July":31,
+    "August":31,
+    "September":30,
+    "October":31,
+    "November":30,
+    "December":31,
+}
+
+function dayOfYear(){
+
+    dayNum=0;
+
+    today=new Date();
+    thisMonth=today.getMonth();
+
+    for(counter=0;counter==thisMonth;counter++){
+
+
+
+    }
+
+}
+
+
+function sunCalculation(loc){
+    timeZone=new Date();
+
+    pie= Math.PI;
+
+    fractionalYear=((2*pie)/365);
+
+}
