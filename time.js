@@ -162,9 +162,11 @@ function outputInfo(loc){
 
 document.getElementById("loc").onload=givCoor();
 
+monthDays=[31 ,29,31,30,31,30,31,31,30,31,30,31];
+
 months = {
     "January": 31,
-    "Febrauary": 29,
+    "February": 29,
     "March": 31,
     "April":30,
     "May":31,
@@ -174,8 +176,8 @@ months = {
     "September":30,
     "October":31,
     "November":30,
-    "December":31,
-}
+    "December":31
+};
 
 function dayOfYear(){
 
@@ -183,21 +185,94 @@ function dayOfYear(){
 
     today=new Date();
     thisMonth=today.getMonth();
+    dayOfMonth=today.getDate();
 
-    for(counter=0;counter==thisMonth;counter++){
+    for(counter=0;counter<thisMonth;counter++){
 
+        for(dayCounter=0;dayCounter<monthDays[counter];dayCounter++){
 
+            dayNum++;
+            
+        }
 
     }
+
+    for(tCounter=0;tCounter<dayOfMonth;tCounter++){
+        dayNum++;
+    }
+
+    return dayNum;
+
+}
+
+function equationOfTime(fracYear){
+
+    return 229.18*(0.000075 + (0.001868*Math.cos(fracYear))-(0.032077*Math.sin(fracYear))-(0.014615*Math.cos(2*fracYear))-(0.040849*Math.sin(2*fracYear)));
+
+}
+
+function solarDecline(fracYear){
+
+    return 0.006918 - (0.399912*Math.cos(fracYear))+(0.070257*Math.sin(fracYear))-(0.006758*Math.cos(2*fracYear))+(0.000907*Math.sin(2*fracYear))-(0.002697*Math.cos(3*fracYear))+(0.00148*Math.sin(3*fracYear));
 
 }
 
 
+
 function sunCalculation(loc){
-    timeZone=new Date();
+
+    info=document.getElementById("sunCalcVar");
+    info.innerHTML="";
+
+    curTime=new Date();
+
+    timezone=(curTime.getTimezoneOffset())/60;
 
     pie= Math.PI;
 
-    fractionalYear=((2*pie)/365);
+    longi=loc.coords.longitude;
+    lat=loc.coords.latitude;
+
+
+    fractionalYear=((2*pie)/366)*(dayOfYear()-1+((today.getHours()-12)/24));
+
+
+    solutionOfTime=equationOfTime(fractionalYear);
+
+    sunDecline =solarDecline(fractionalYear);
+
+    timeOff=solutionOfTime+4*longi-60*timezone;
+
+    trueSolarTime=(curTime.getHours()*60)+curTime.getMinutes()+(curTime.getSeconds()/60)+timeOff;
+
+    solarHourAngle= (trueSolarTime/4)-180;
+
+    solarZenithAngle=(Math.sin(lat)*Math.sin(sunDecline))+(Math.cos(lat)*Math.cos(sunDecline)*Math.cos(solarHourAngle));//add cos before variable name when using
+
+    solarAzi=-(((Math.sin(lat)*Math.cos(solarZenithAngle))-Math.sin(sunDecline))/(Math.cos(lat)*Math.sin(solarZenithAngle)));
+    //add cos on variable and inside the brackets (180- var)
+
+    sha=-Math.acos(((Math.cos(1.58533492))/(Math.cos(lat)*Math.cos(sunDecline)))-(Math.tan(lat)*Math.tan(sunDecline)));
+
+    shaD=sha*(180/pie);
+
+    sunRise=720-(4*(longi+shaD))-solutionOfTime;
+
+
+    info.innerHTML+= "Pi: "+pie+"<br>";
+    info.innerHTML+= "Fractional year: " + fractionalYear + "<br>";
+    info.innerHTML+= "Equation of time: "+ solutionOfTime + "<br>";
+    info.innerHTML+= "Solar declination: "+ sunDecline*(180/pie) + "<br>";
+    info.innerHTML+= "Timezone(h): "+timezone+"<br>";
+    info.innerHTML+= "Time offset: "+timeOff+ "<br>";
+    info.innerHTML+= "True solar time:" +trueSolarTime+"<br>";
+    info.innerHTML+= "Solar Zenith angle:"+Math.cos(solarZenithAngle)*(180/pie)+"<br>";
+    info.innerHTML+="Solar Azimuth angle:"+Math.cos(180 -(solarAzi))*(180/pie)+"<br>";
+
+    info.innerHTML+="Sunset hour angle "+ shaD +"<br>";
+    info.innerHTML+="Sunset hour: "+ sunRise/60+"<br>";
+
+
+    
 
 }
