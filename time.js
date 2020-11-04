@@ -143,6 +143,7 @@ function givCoor(){
     if(navigator.geolocation){
         navigator.geolocation.getCurrentPosition(outputInfo);
         navigator.geolocation.getCurrentPosition(sunCalculation);
+        navigator.geolocation.getCurrentPosition(sunCalc2);
     }else{
         elem.innerHTML="No coords 4 u";
     }
@@ -162,22 +163,8 @@ function outputInfo(loc){
 
 document.getElementById("loc").onload=givCoor();
 
-monthDays=[31 ,29,31,30,31,30,31,31,30,31,30,31];
 
-months = {
-    "January": 31,
-    "February": 29,
-    "March": 31,
-    "April":30,
-    "May":31,
-    "June":30,
-    "July":31,
-    "August":31,
-    "September":30,
-    "October":31,
-    "November":30,
-    "December":31
-};
+monthDays=[31 ,29,31,30,31,30,31,31,30,31,30,31];
 
 function dayOfYear(){
 
@@ -272,7 +259,47 @@ function sunCalculation(loc){
     info.innerHTML+="Sunset hour angle "+ shaD +"<br>";
     info.innerHTML+="Sunset hour: "+ sunRise/60+"<br>";
 
+}
 
-    
+function jDN(){
+date=new Date();
+months=date.getMonth();
+year=date.getFullYear();
+day=date.getDate();
+
+monthEq=(months-14)/12;
+yearEq=year+4800;
+
+firstEq=(1461 *(yearEq+monthEq))/4;
+
+monthEq2=(months-2-12*monthEq);
+
+secondEq=(367 * monthEq2)/12;
+
+thirdEq=(3*(((yearEq+100)+monthEq)/100))/4;
+
+dayEq=day-32075;
+
+
+
+return firstEq+secondEq-thirdEq+dayEq;
+
+
+}
+
+function sunCalc2(loc){
+
+    info=document.getElementById("sunCalc2Var");
+    info.innerHTML="";
+
+    curTime=new Date();
+
+    curYear=curTime.getFullYear();
+    curMonth=curTime.getMonth();
+
+    julianDayNumber=jDN();
+
+
+    info.innerHTML+="The current Julian Day Number is: "+julianDayNumber+"<br>";
 
 }
