@@ -294,12 +294,18 @@ function sunCalc2(loc){
 
     curTime=new Date();
 
+    longi=loc.coords.longitude;
+    lat=loc.coords.latitude;
+
     curYear=curTime.getFullYear();
     curMonth=curTime.getMonth();
 
-    julianDayNumber=jDN();
+    julianDayNumber=(Date.now() / 86400000) + 2440587.5;
+
+    meanSolarNoon=julianDayNumber-(longi/360);
 
 
-    info.innerHTML+="The current Julian Day Number is: "+julianDayNumber+"<br>";
+    info.innerHTML+="The current Julian Day Number is: "+Math.floor(julianDayNumber)+"<br>";
+    info.innerHTML+="The mean solar noon is: "+meanSolarNoon+"<br>";
 
 }
