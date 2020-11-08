@@ -304,8 +304,11 @@ function sunCalc2(loc){
 
     meanSolarNoon=julianDayNumber-(longi/360);
 
+    solarMeanAnomaly=(357.5291 + 0.98560028 * meanSolarNoon)%360;
+
 
     info.innerHTML+="The current Julian Day Number is: "+Math.floor(julianDayNumber)+"<br>";
     info.innerHTML+="The mean solar noon is: "+meanSolarNoon+"<br>";
+    info.innerHTML+="The solar mean anomaly is: "+solarMeanAnomaly+"<br";
 
 }
