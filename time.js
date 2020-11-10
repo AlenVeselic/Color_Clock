@@ -293,6 +293,7 @@ function sunCalc2(loc){
     info.innerHTML="";
 
     curTime=new Date();
+    pie=Math.PI;
 
     longi=loc.coords.longitude;
     lat=loc.coords.latitude;
@@ -300,15 +301,36 @@ function sunCalc2(loc){
     curYear=curTime.getFullYear();
     curMonth=curTime.getMonth();
 
-    julianDayNumber=(Date.now() / 86400000) + 2440587.5;
+    julianDay=(Date.now() / 86400000) + 2440587.5;
 
-    meanSolarNoon=julianDayNumber-(longi/360);
+    jdnFrac=(julianDay-0.5)%1;
 
-    solarMeanAnomaly=(357.5291 + 0.98560028 * meanSolarNoon)%360;
+    meanSolarNoon=Math.floor(julianDay)-(longi/360);
 
+    solarMeanAnomaly=(357.5291 + 0.98560028 * (meanSolarNoon))%360;
 
-    info.innerHTML+="The current Julian Day Number is: "+Math.floor(julianDayNumber)+"<br>";
-    info.innerHTML+="The mean solar noon is: "+meanSolarNoon+"<br>";
-    info.innerHTML+="The solar mean anomaly is: "+solarMeanAnomaly+"<br";
+    equationOfCenter=1.9148*Math.sin(solarMeanAnomaly)+0.0200*Math.sin(2*solarMeanAnomaly)+0.0003*Math.sin(3*solarMeanAnomaly);
 
+    eqCtoDeg=equationOfCenter*(180/pie);
+
+    eclipticLongitude=(solarMeanAnomaly + equationOfCenter + 180 + 102.9372)%360;
+
+    solarTransit=2451545.0 + meanSolarNoon + 0.0053*Math.sin(solarMeanAnomaly)-0.0069*Math.sin(2*eclipticLongitude);
+
+    sunDecline= Math.sin(eclipticLongitude) * Math.sin(23.44);
+
+    info.innerHTML+="The current Julian Day Number is: "+Math.floor(julianDay)+"<br>";
+    info.innerHTML+="Julian day with the current fractional part:"+julianDay+"<br>";
+    info.innerHTML+="Julian day fractional part: "+jdnFrac+ "<br>";
+    info.innerHTML+="The mean solar noon is: "+(meanSolarNoon+0.5)+"<br>";
+    info.innerHTML+="The solar mean anomaly is: "+solarMeanAnomaly+"<br>";
+    info.innerHTML+="The equation of center is: "+eqCtoDeg+"<br>";
+    info.innerHTML+="The ecliptic longitude is:" + eclipticLongitude+ "<br>"; 
+    info.innerHTML+="The solar transit value is: "+solarTransit+"<br>";
+    info.innerHTML+="Sun declination: "+radToDeg(sunDecline)+"<br>";
+
+}
+
+function radToDeg(val){
+    return val*(180/Math.PI);
 }
