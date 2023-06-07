@@ -363,7 +363,22 @@ function sunCalc(loc) {
 
   sunTrueLongInDegrees = geomMeanLongSun + sunEqOfCtr;
   sunTrueAnomInDegrees = geomMeanAnomSun + sunEqOfCtr;
-  sunRadVector;
+  sunRadVectorInAUs =
+    (1.000001018 * (1 - eccentEarthOrbit * eccentEarthOrbit)) /
+    (1 + eccentEarthOrbit * Math.cos(degToRad(sunTrueAnomInDegrees)));
+  sunAppLongInDegrees =
+    sunTrueLongInDegrees -
+    0.00569 -
+    0.00478 * Math.sin(radToDeg(125.04 - 1934.136 * julianCentury));
+
+  meanObliqEclipticInDegrees =
+    23 +
+    (26 +
+      (21.448 -
+        julianCentury *
+          (46.815 + julianCentury * (0.00059 - julianCentury * 0.001813))) /
+        60) /
+      60;
 
   info.innerHTML += `Date: ${new Date(curDate).toDateString()} <br>`;
   info.innerHTML +=
@@ -375,8 +390,16 @@ function sunCalc(loc) {
   info.innerHTML += "Sun Equinox of Center:" + sunEqOfCtr + "<br>";
   info.innerHTML += "Sun True Long in degrees:" + sunTrueLongInDegrees + "<br>";
   info.innerHTML += "Sun True Anom in degrees:" + sunTrueAnomInDegrees + "<br>";
+  info.innerHTML += "Sun Rad Vector in AUs:" + sunRadVectorInAUs + "<br>";
+  info.innerHTML += "Sun App Long in degrees: " + sunAppLongInDegrees + "<br>";
+  info.innerHTML +=
+    "Mean Obliq Ecliptic in degrees: " + meanObliqEclipticInDegrees + "<br>";
 }
 
 function radToDeg(val) {
   return val * (180 / Math.PI);
+}
+
+function degToRad(val) {
+  return val * (Math.PI / 180);
 }
