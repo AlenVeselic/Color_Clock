@@ -4,8 +4,8 @@ function display_c() {
 }
 
 function display_ct() {
-    var x = new Date();
-    //var formatX=x.getHours()+":"+x.getMinutes()+":"+x.getSeconds();
+  var x = new Date();
+  //var formatX=x.getHours()+":"+x.getMinutes()+":"+x.getSeconds();
 
   if (x.getHours() < 10) formatX = "0" + x.getHours() + ":";
   else formatX = x.getHours() + ":";
@@ -17,9 +17,9 @@ function display_ct() {
   else formatX += x.getSeconds();
 
   document.getElementById("Clock").innerHTML = formatX;
-    goAct(x);
-    animationSwitcher(x);
-    display_c();
+  goAct(x);
+  animationSwitcher(x);
+  display_c();
 }
 
 function getBodyAttr(attr) {
@@ -27,17 +27,17 @@ function getBodyAttr(attr) {
 
   let currentAnimation = window.getComputedStyle(elem).getPropertyValue(attr);
 
-    return currentAnimation;
+  return currentAnimation;
 }
 
 function displayAnimationName() {
   name = getBodyAttr("animation-name");
-    alert(name);
+  alert(name);
 }
 
 function displayCurrentBackgroundColor() {
   color = getBodyAttr("background-color");
-    alert(color);
+  alert(color);
 }
 
 function switchAnimation(toThis) {
@@ -76,9 +76,9 @@ function animationSwitcher(cuTime) {
 
 function betweenTime(curDate, befTime, aftTime) {
   if (befTime <= curDate && curDate <= aftTime) {
-        return true;
-    }
-   return false; 
+    return true;
+  }
+  return false;
 }
 
 function goAct(curTime) {
@@ -91,13 +91,13 @@ function goAct(curTime) {
     document.getElementById("act").innerHTML = "The time to act is NOW!";
   } else {
     document.getElementById("act").innerHTML = "Now is not the time to act...";
-    }
+  }
 }
 
 function spawnStar() {
   star = document.createElement("div");
 
-    star.classList.add("star");
+  star.classList.add("star");
 
   star.style.position = "absolute";
   star.style.zIndex = -1;
@@ -114,7 +114,7 @@ function spawnStar() {
   star.style.left = xCoor + "px";
   star.style.top = yCoor + "px";
 
-    document.body.appendChild(star);
+  document.body.appendChild(star);
 }
 
 function displayDebug() {
@@ -126,18 +126,18 @@ function displayDebug() {
   } else {
     debugEl.style.display = "none";
     document.getElementById("dState").innerHTML = "disabled";
-    } 
+  }
 }
 
 function givCoor() {
   elem = document.getElementById("loc");
-    
+
   if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(outputInfo);
+    navigator.geolocation.getCurrentPosition(outputInfo);
     navigator.geolocation.getCurrentPosition(sunCalc);
   } else {
     elem.innerHTML = "No coords 4 u";
-    }
+  }
 }
 
 function outputInfo(loc) {
@@ -160,15 +160,15 @@ function dayOfYear() {
 
   for (counter = 0; counter < thisMonth; counter++) {
     for (dayCounter = 0; dayCounter < monthDays[counter]; dayCounter++) {
-            dayNum++;
-        }
+      dayNum++;
     }
+  }
 
   for (tCounter = 0; tCounter < dayOfMonth; tCounter++) {
-        dayNum++;
-    }
+    dayNum++;
+  }
 
-    return dayNum;
+  return dayNum;
 }
 
 function equationOfTime(fracYear) {
@@ -335,30 +335,48 @@ function sunCalc2(loc) {
   sunCalc(loc);
 }
 
-    solarMeanAnomaly=(357.5291 + 0.98560028 * (meanSolarNoon))%360;
+function sunCalc(loc) {
+  pie = Math.PI;
+  info = document.getElementById("sunCalc2Var");
+  curDate = new Date(2023, 5, 7, 0, 06, 0);
 
-    equationOfCenter=1.9148*Math.sin(solarMeanAnomaly)+0.0200*Math.sin(2*solarMeanAnomaly)+0.0003*Math.sin(3*solarMeanAnomaly);
+  time = 0.1 / 24;
 
-    eqCtoDeg=equationOfCenter*(180/pie);
+  julianDay = curDate.valueOf() / 86400000 + 2440587.5;
+  julianCentury = (julianDay - 2451545) / 36525;
 
-    eclipticLongitude=(solarMeanAnomaly + equationOfCenter + 180 + 102.9372)%360;
+  geomMeanLongSun =
+    (280.46646 + julianCentury * (36000.76983 + julianCentury * 0.0003032)) %
+    360;
+  geomMeanAnomSun =
+    357.52911 + julianCentury * (35999.05029 - 0.0001537 * julianCentury);
 
-    solarTransit=2451545.0 + meanSolarNoon + 0.0053*Math.sin(solarMeanAnomaly)-0.0069*Math.sin(2*eclipticLongitude);
+  eccentEarthOrbit =
+    0.016708634 - julianCentury * (0.000042037 + 0.0000001267 * julianCentury);
 
-    sunDecline= Math.sin(eclipticLongitude) * Math.sin(23.44);
+  sunEqOfCtr =
+    Math.sin(geomMeanAnomSun * (pie / 180)) *
+      (1.914602 - julianCentury * (0.004817 + 0.000014 * julianCentury)) +
+    Math.sin(2 * geomMeanAnomSun * (pie / 180)) *
+      (0.019993 - 0.000101 * julianCentury) +
+    Math.sin(3 * geomMeanAnomSun * (pie / 180)) * 0.000289;
 
-    info.innerHTML+="The current Julian Day Number is: "+Math.floor(julianDay)+"<br>";
-    info.innerHTML+="Julian day with the current fractional part:"+julianDay+"<br>";
-    info.innerHTML+="Julian day fractional part: "+jdnFrac+ "<br>";
-    info.innerHTML+="The mean solar noon is: "+(meanSolarNoon+0.5)+"<br>";
-    info.innerHTML+="The solar mean anomaly is: "+solarMeanAnomaly+"<br>";
-    info.innerHTML+="The equation of center is: "+eqCtoDeg+"<br>";
-    info.innerHTML+="The ecliptic longitude is:" + eclipticLongitude+ "<br>"; 
-    info.innerHTML+="The solar transit value is: "+solarTransit+"<br>";
-    info.innerHTML+="Sun declination: "+radToDeg(sunDecline)+"<br>";
+  sunTrueLongInDegrees = geomMeanLongSun + sunEqOfCtr;
+  sunTrueAnomInDegrees = geomMeanAnomSun + sunEqOfCtr;
+  sunRadVector;
 
+  info.innerHTML += `Date: ${new Date(curDate).toDateString()} <br>`;
+  info.innerHTML +=
+    "Julian day with the current fractional part:" + julianDay + "<br>";
+  info.innerHTML += "Julian century:" + julianCentury + "<br>";
+  info.innerHTML += "Geom Mean Long Sun in degrees:" + geomMeanLongSun + "<br>";
+  info.innerHTML += "Geom Mean Anom Sun in degrees:" + geomMeanAnomSun + "<br>";
+  info.innerHTML += "Eccent Earth Orbit:" + eccentEarthOrbit + "<br>";
+  info.innerHTML += "Sun Equinox of Center:" + sunEqOfCtr + "<br>";
+  info.innerHTML += "Sun True Long in degrees:" + sunTrueLongInDegrees + "<br>";
+  info.innerHTML += "Sun True Anom in degrees:" + sunTrueAnomInDegrees + "<br>";
 }
 
-function radToDeg(val){
-    return val*(180/Math.PI);
+function radToDeg(val) {
+  return val * (180 / Math.PI);
 }
