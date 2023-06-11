@@ -338,12 +338,17 @@ function sunCalc2(loc) {
 function sunCalc(loc) {
   pie = Math.PI;
   info = document.getElementById("sunCalc2Var");
-  curDate = new Date(2023, 5, 7, 0, 06, 0);
+  curDate = new Date(2023, 5, 7, 0, 5, 0);
+
+  latitude = loc.coords.latitude;
+  longitude = loc.coords.longitude;
 
   time = 0.1 / 24;
 
   julianDay = curDate.valueOf() / 86400000 + 2440587.5;
   julianCentury = (julianDay - 2451545) / 36525;
+
+  timezone = 2;
 
   geomMeanLongSun =
     (280.46646 + julianCentury * (36000.76983 + julianCentury * 0.0003032)) %
@@ -380,6 +385,92 @@ function sunCalc(loc) {
         60) /
       60;
 
+  obliqCorrInDegrees =
+    meanObliqEclipticInDegrees +
+    0.00256 * Math.cos(degToRad(125.04 - 1934.136 * julianCentury));
+
+  sunRtAscenInDegrees = radToDeg(
+    Math.atan2(
+      Math.cos(degToRad(obliqCorrInDegrees)) *
+        Math.sin(degToRad(sunAppLongInDegrees)),
+      Math.cos(degToRad(sunAppLongInDegrees))
+    )
+  );
+  sunDeclin = radToDeg(
+    Math.asin(
+      Math.sin(degToRad(obliqCorrInDegrees)) *
+        Math.sin(degToRad(sunAppLongInDegrees))
+    )
+  );
+  varY =
+    Math.tan(degToRad(obliqCorrInDegrees / 2)) *
+    Math.tan(degToRad(obliqCorrInDegrees / 2));
+
+  eqOfTimeInMinutes =
+    4 *
+    radToDeg(
+      varY * Math.sin(2 * degToRad(geomMeanLongSun)) -
+        2 * eccentEarthOrbit * Math.sin(degToRad(geomMeanAnomSun)) +
+        4 *
+          eccentEarthOrbit *
+          varY *
+          Math.sin(degToRad(geomMeanAnomSun)) *
+          Math.cos(2 * degToRad(geomMeanLongSun)) -
+        0.5 * varY * varY * Math.sin(4 * degToRad(geomMeanLongSun)) -
+        1.25 *
+          eccentEarthOrbit *
+          eccentEarthOrbit *
+          Math.sin(2 * degToRad(geomMeanAnomSun))
+    );
+
+  HASunriseInDegrees = radToDeg(
+    Math.acos(
+      Math.cos(degToRad(90.833)) /
+        (Math.cos(degToRad(latitude)) * Math.cos(degToRad(sunDeclin))) -
+        Math.tan(degToRad(latitude)) * Math.tan(degToRad(sunDeclin))
+    )
+  );
+
+  solarNoonInLST =
+    (720 - 4 * longitude - eqOfTimeInMinutes + timezone * 60) / 1440;
+
+  sunriseTime = solarNoonInLST - (HASunriseInDegrees * 4) / 1440;
+  sunsetTime = solarNoonInLST + (HASunriseInDegrees * 4) / 1440;
+  sunlightDuration = 8 * HASunriseInDegrees;
+
+  trueSolarTimeInMinutes =
+    (time * 1440 + eqOfTimeInMinutes + 4 * longitude - 60 * timezone) % 1440;
+
+  hourAngleInDegrees =
+    trueSolarTimeInMinutes / 4 < 0
+      ? trueSolarTimeInMinutes / 4 + 180
+      : trueSolarTimeInMinutes / 4 - 180;
+
+  solarZenithAngleInDegrees = radToDeg(
+    Math.acos(
+      Math.sin(degToRad(latitude)) * Math.sin(degToRad(sunDeclin)) +
+        Math.cos(degToRad(latitude)) *
+          Math.cos(degToRad(sunDeclin)) *
+          Math.cos(degToRad(hourAngleInDegrees))
+    )
+  );
+
+  solarElevationAngleInDegrees = 90 - solarZenithAngleInDegrees;
+
+  approxAtmosphericRefractionInDegrees =
+    calculateApproxAtmosphericRefractionInDegrees(solarElevationAngleInDegrees);
+
+  solarElevationCorrectedForAtmosphericRefraction =
+    solarElevationAngleInDegrees + approxAtmosphericRefractionInDegrees;
+
+  solarAzimuthAngleDegreesNorthClockwise =
+    calculateSolarAzimuthAngleDegreesCWFromN(
+      latitude,
+      sunDeclin,
+      hourAngleInDegrees,
+      solarZenithAngleInDegrees
+    );
+
   info.innerHTML += `Date: ${new Date(curDate).toDateString()} <br>`;
   info.innerHTML +=
     "Julian day with the current fractional part:" + julianDay + "<br>";
@@ -394,6 +485,27 @@ function sunCalc(loc) {
   info.innerHTML += "Sun App Long in degrees: " + sunAppLongInDegrees + "<br>";
   info.innerHTML +=
     "Mean Obliq Ecliptic in degrees: " + meanObliqEclipticInDegrees + "<br>";
+  info.innerHTML += "Obliq Corr in degrees: " + obliqCorrInDegrees + "<br>";
+  info.innerHTML += "Sun Rt Ascen in degrees: " + sunRtAscenInDegrees + "<br>";
+  info.innerHTML += "Sun Declin: " + sunDeclin + "<br>";
+  info.innerHTML += "Var y: " + varY + "<br>";
+  info.innerHTML += "Eq of time in minutes: " + eqOfTimeInMinutes + "<br>";
+  info.innerHTML += "HA Sunrise in degrees: " + HASunriseInDegrees + "<br>";
+  info.innerHTML += "Solar noon in LST: " + solarNoonInLST + "<br>";
+  info.innerHTML += "Sunrise time in LST: " + sunriseTime + "<br>";
+
+  info.innerHTML += `Sunrise time: ${floatToTime(sunriseTime)}<br>`;
+  info.innerHTML += `Sunset time: ${floatToTime(sunsetTime)}<br>`;
+
+  info.innerHTML += `Sunlight duration: ${sunlightDuration}<br>`;
+
+  info.innerHTML += `True Solar time in minutes: ${trueSolarTimeInMinutes}<br>`;
+  info.innerHTML += `Hour angle in degrees: ${hourAngleInDegrees}<br>`;
+  info.innerHTML += `Solar Zenith Angle in degrees: ${solarZenithAngleInDegrees}<br>`;
+  info.innerHTML += `Solar Elevation Angle in degrees: ${solarElevationAngleInDegrees}<br>`;
+  info.innerHTML += `Approx Atmospheric Refraction in degrees: ${approxAtmosphericRefractionInDegrees}<br>`;
+  info.innerHTML += `Solar Elevation corrected for atm refraction in degrees: ${solarElevationCorrectedForAtmosphericRefraction}<br>`;
+  info.innerHTML += `Solar Azimuth Angle in degrees northclockwise: ${solarAzimuthAngleDegreesNorthClockwise}<br>`;
 }
 
 function radToDeg(val) {
@@ -402,4 +514,87 @@ function radToDeg(val) {
 
 function degToRad(val) {
   return val * (Math.PI / 180);
+}
+
+function floatToTime(floatTime) {
+  timeInSeconds = parseInt(floatTime * 86400, 10);
+
+  hours = Math.floor(timeInSeconds / 3600);
+  minutes = Math.floor((timeInSeconds - hours * 3600) / 60);
+  seconds = timeInSeconds - hours * 3600 - minutes * 60;
+
+  return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(
+    seconds
+  )}`;
+}
+
+function formatNumber(number) {
+  return number.toLocaleString("sl-SI", {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  });
+}
+
+function calculateApproxAtmosphericRefractionInDegrees(elevationAngle) {
+  return (
+    getBaseValueForApproxAtmosphericRefractionInDegrees(elevationAngle) / 3600
+  );
+}
+
+function getBaseValueForApproxAtmosphericRefractionInDegrees(elevationAngle) {
+  if (elevationAngle > 85) return 0;
+  if (elevationAngle > 5) {
+    return (
+      58.1 / Math.tan(degToRad(elevationAngle)) -
+      0.07 / Math.pow(Math.tan(degToRad(elevationAngle)), 3) +
+      0.000086 / Math.pow(Math.tan(degToRad(elevationAngle)), 5)
+    );
+  }
+  if (elevationAngle > -0.575) {
+    return (
+      1735 +
+      elevationAngle *
+        (-518.2 +
+          elevationAngle *
+            (103.4 + elevationAngle * (-12.79 + elevationAngle * 0.711)))
+    );
+  }
+
+  return -20.772 / Math.tan(degToRad(elevationAngle));
+}
+
+function calculateSolarAzimuthAngleDegreesCWFromN(
+  latitude,
+  sunDecline,
+  hourAngle,
+  solarZenithAngle
+) {
+  if (hourAngle > 0) {
+    return (
+      (radToDeg(
+        Math.acos(
+          (Math.sin(degToRad(latitude)) * Math.cos(degToRad(solarZenithAngle)) -
+            Math.sin(degToRad(sunDecline))) /
+            (Math.cos(degToRad(latitude)) *
+              Math.sin(degToRad(solarZenithAngle)))
+        )
+      ) +
+        180) %
+      360
+    );
+  } else {
+    return (
+      (540 -
+        radToDeg(
+          Math.acos(
+            (Math.sin(degToRad(latitude)) *
+              Math.cos(degToRad(solarZenithAngle)) -
+              Math.sin(degToRad(sunDecline))) /
+              (Math.cos(degToRad(latitude)) *
+                Math.sin(degToRad(solarZenithAngle)))
+          )
+        )) %
+      360
+    );
+  }
 }
