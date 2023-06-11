@@ -1,3 +1,8 @@
+let sunriseTime = new Date();
+let dayTime = new Date();
+let sunsetTime = new Date();
+let nightTime = new Date();
+
 function display_c() {
   var refresh = 1000;
   mytime = setTimeout("display_ct()", refresh);
@@ -46,14 +51,10 @@ function switchAnimation(toThis) {
 }
 
 function animationSwitcher(cuTime) {
-  sunriseTime = new Date();
-  dayTime = new Date();
-  sunsetTime = new Date();
-  nightTime = new Date();
-  sunriseTime.setHours(11, 57, 0);
-  dayTime.setHours(11, 57, 30);
-  sunsetTime.setHours(11, 58, 0);
-  nightTime.setHours(11, 58, 30);
+  // sunriseTime.setHours(11, 57, 0);
+  // dayTime.setHours(11, 57, 30);
+  // sunsetTime.setHours(17, 36, 0);
+  // nightTime.setHours(17, 37, 30);
 
   clockEnd = new Date();
   clockEnd.setHours(24, 0, 0);
@@ -134,7 +135,7 @@ function givCoor() {
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(outputInfo);
-    navigator.geolocation.getCurrentPosition(sunCalc);
+    navigator.geolocation.getCurrentPosition(sunCalculation);
   } else {
     elem.innerHTML = "No coords 4 u";
   }
@@ -151,194 +152,11 @@ document.getElementById("loc").onload = givCoor();
 
 monthDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-function dayOfYear() {
-  dayNum = 0;
-
-  today = new Date();
-  thisMonth = today.getMonth();
-  dayOfMonth = today.getDate();
-
-  for (counter = 0; counter < thisMonth; counter++) {
-    for (dayCounter = 0; dayCounter < monthDays[counter]; dayCounter++) {
-      dayNum++;
-    }
-  }
-
-  for (tCounter = 0; tCounter < dayOfMonth; tCounter++) {
-    dayNum++;
-  }
-
-  return dayNum;
-}
-
-function equationOfTime(fracYear) {
-  return (
-    229.18 *
-    (0.000075 +
-      0.001868 * Math.cos(fracYear) -
-      0.032077 * Math.sin(fracYear) -
-      0.014615 * Math.cos(2 * fracYear) -
-      0.040849 * Math.sin(2 * fracYear))
-  );
-}
-
-function solarDecline(fracYear) {
-  return (
-    0.006918 -
-    0.399912 * Math.cos(fracYear) +
-    0.070257 * Math.sin(fracYear) -
-    0.006758 * Math.cos(2 * fracYear) +
-    0.000907 * Math.sin(2 * fracYear) -
-    0.002697 * Math.cos(3 * fracYear) +
-    0.00148 * Math.sin(3 * fracYear)
-  );
-}
-
 function sunCalculation(loc) {
-  info = document.getElementById("sunCalcVar");
-  info.innerHTML = "";
-
-  curTime = new Date();
-
-  timezone = curTime.getTimezoneOffset() / 60;
-
-  pie = Math.PI;
-
-  longi = loc.coords.longitude;
-  lat = loc.coords.latitude;
-
-  fractionalYear =
-    ((2 * pie) / 366) * (dayOfYear() - 1 + (today.getHours() - 12) / 24);
-
-  solutionOfTime = equationOfTime(fractionalYear);
-
-  sunDecline = solarDecline(fractionalYear);
-
-  timeOff = solutionOfTime + 4 * longi - 60 * timezone;
-
-  trueSolarTime =
-    curTime.getHours() * 60 +
-    curTime.getMinutes() +
-    curTime.getSeconds() / 60 +
-    timeOff;
-
-  solarHourAngle = trueSolarTime / 4 - 180;
-
-  solarZenithAngle =
-    Math.sin(lat) * Math.sin(sunDecline) +
-    Math.cos(lat) * Math.cos(sunDecline) * Math.cos(solarHourAngle); //add cos before variable name when using
-
-  solarAzi = -(
-    (Math.sin(lat) * Math.cos(solarZenithAngle) - Math.sin(sunDecline)) /
-    (Math.cos(lat) * Math.sin(solarZenithAngle))
-  );
-  //add cos on variable and inside the brackets (180- var)
-
-  sha = -Math.acos(
-    Math.cos(1.58533492) / (Math.cos(lat) * Math.cos(sunDecline)) -
-      Math.tan(lat) * Math.tan(sunDecline)
-  );
-
-  shaD = sha * (180 / pie);
-
-  sunRise = 720 - 4 * (longi + shaD) - solutionOfTime;
-
-  info.innerHTML += "Pi: " + pie + "<br>";
-  info.innerHTML += "Fractional year: " + fractionalYear + "<br>";
-  info.innerHTML += "Equation of time: " + solutionOfTime + "<br>";
-  info.innerHTML += "Solar declination: " + sunDecline * (180 / pie) + "<br>";
-  info.innerHTML += "Timezone(h): " + timezone + "<br>";
-  info.innerHTML += "Time offset: " + timeOff + "<br>";
-  info.innerHTML += "True solar time:" + trueSolarTime + "<br>";
-  info.innerHTML +=
-    "Solar Zenith angle:" + Math.cos(solarZenithAngle) * (180 / pie) + "<br>";
-  info.innerHTML +=
-    "Solar Azimuth angle:" + Math.cos(180 - solarAzi) * (180 / pie) + "<br>";
-
-  info.innerHTML += "Sunset hour angle " + shaD + "<br>";
-  info.innerHTML += "Sunset hour: " + sunRise / 60 + "<br>";
-}
-
-function jDN() {
-  date = new Date();
-  months = date.getMonth();
-  year = date.getFullYear();
-  day = date.getDate();
-
-  monthEq = (months - 14) / 12;
-  yearEq = year + 4800;
-
-  firstEq = (1461 * (yearEq + monthEq)) / 4;
-
-  monthEq2 = months - 2 - 12 * monthEq;
-
-  secondEq = (367 * monthEq2) / 12;
-
-  thirdEq = (3 * ((yearEq + 100 + monthEq) / 100)) / 4;
-
-  dayEq = day - 32075;
-
-  return firstEq + secondEq - thirdEq + dayEq;
-}
-
-function sunCalc2(loc) {
-  info = document.getElementById("sunCalc2Var");
-  info.innerHTML = "";
-
-  curTime = new Date();
-  pie = Math.PI;
-
-  longi = loc.coords.longitude;
-  lat = loc.coords.latitude;
-
-  curYear = curTime.getFullYear();
-  curMonth = curTime.getMonth();
-
-  julianDay = Date.now() / 86400000 + 2440587.5;
-
-  jdnFrac = (julianDay - 0.5) % 1;
-
-  meanSolarNoon = Math.floor(julianDay) - longi / 360;
-
-  solarMeanAnomaly = (357.5291 + 0.98560028 * meanSolarNoon) % 360;
-
-  equationOfCenter =
-    1.9148 * Math.sin(solarMeanAnomaly) +
-    0.02 * Math.sin(2 * solarMeanAnomaly) +
-    0.0003 * Math.sin(3 * solarMeanAnomaly);
-
-  eqCtoDeg = equationOfCenter * (180 / pie);
-
-  eclipticLongitude =
-    (solarMeanAnomaly + equationOfCenter + 180 + 102.9372) % 360;
-
-  solarTransit =
-    2451545.0 +
-    meanSolarNoon +
-    0.0053 * Math.sin(solarMeanAnomaly) -
-    0.0069 * Math.sin(2 * eclipticLongitude);
-
-  sunDecline = Math.sin(eclipticLongitude) * Math.sin(23.44);
-
-  info.innerHTML +=
-    "The current Julian Day Number is: " + Math.floor(julianDay) + "<br>";
-  info.innerHTML +=
-    "Julian day with the current fractional part:" + julianDay + "<br>";
-  info.innerHTML += "Julian day fractional part: " + jdnFrac + "<br>";
-  info.innerHTML += "The mean solar noon is: " + (meanSolarNoon + 0.5) + "<br>";
-  info.innerHTML += "The solar mean anomaly is: " + solarMeanAnomaly + "<br>";
-  info.innerHTML += "The equation of center is: " + eqCtoDeg + "<br>";
-  info.innerHTML += "The ecliptic longitude is:" + eclipticLongitude + "<br>";
-  info.innerHTML += "The solar transit value is: " + solarTransit + "<br>";
-  info.innerHTML += "Sun declination: " + radToDeg(sunDecline) + "<br>";
-
-  sunCalc(loc);
-}
-
-function sunCalc(loc) {
   pie = Math.PI;
   info = document.getElementById("sunCalc2Var");
-  curDate = new Date(2023, 5, 7, 0, 5, 0);
+  curDate = new Date();
+  curDate.setHours(0, 5, 0);
 
   latitude = loc.coords.latitude;
   longitude = loc.coords.longitude;
@@ -434,8 +252,31 @@ function sunCalc(loc) {
   solarNoonInLST =
     (720 - 4 * longitude - eqOfTimeInMinutes + timezone * 60) / 1440;
 
-  sunriseTime = solarNoonInLST - (HASunriseInDegrees * 4) / 1440;
-  sunsetTime = solarNoonInLST + (HASunriseInDegrees * 4) / 1440;
+  sunriseTimeAsFloat = solarNoonInLST - (HASunriseInDegrees * 4) / 1440;
+  sunriseTimeConverted = floatToObject(sunriseTimeAsFloat);
+  sunriseTime.setHours(
+    sunriseTimeConverted.hours,
+    sunriseTimeConverted.minutes,
+    sunriseTimeConverted.seconds
+  );
+  dayTime.setHours(
+    sunriseTimeConverted.hours,
+    sunriseTimeConverted.minutes + 15,
+    sunriseTimeConverted.seconds
+  );
+  sunsetTimeAsFloat = solarNoonInLST + (HASunriseInDegrees * 4) / 1440;
+  sunsetTimeConverted = floatToObject(sunsetTimeAsFloat);
+  sunsetTime.setHours(
+    sunsetTimeConverted.hours,
+    sunsetTimeConverted.minutes,
+    sunsetTimeConverted.seconds
+  );
+  nightTime.setHours(
+    sunsetTimeConverted.hours,
+    sunsetTimeConverted.minutes + 15,
+    sunsetTimeConverted.seconds
+  );
+
   sunlightDuration = 8 * HASunriseInDegrees;
 
   trueSolarTimeInMinutes =
@@ -472,6 +313,10 @@ function sunCalc(loc) {
     );
 
   info.innerHTML += `Date: ${new Date(curDate).toDateString()} <br>`;
+  info.innerHTML += `Sunrise: ${sunriseTime.toTimeString()} <br>`;
+  info.innerHTML += `Daytime: ${dayTime.toTimeString()} <br>`;
+  info.innerHTML += `Sunset: ${sunsetTime.toTimeString()} <br>`;
+  info.innerHTML += `Nighttime: ${nightTime.toTimeString()} <br>`;
   info.innerHTML +=
     "Julian day with the current fractional part:" + julianDay + "<br>";
   info.innerHTML += "Julian century:" + julianCentury + "<br>";
@@ -492,10 +337,10 @@ function sunCalc(loc) {
   info.innerHTML += "Eq of time in minutes: " + eqOfTimeInMinutes + "<br>";
   info.innerHTML += "HA Sunrise in degrees: " + HASunriseInDegrees + "<br>";
   info.innerHTML += "Solar noon in LST: " + solarNoonInLST + "<br>";
-  info.innerHTML += "Sunrise time in LST: " + sunriseTime + "<br>";
+  info.innerHTML += "Sunrise time in LST: " + sunriseTimeAsFloat + "<br>";
 
-  info.innerHTML += `Sunrise time: ${floatToTime(sunriseTime)}<br>`;
-  info.innerHTML += `Sunset time: ${floatToTime(sunsetTime)}<br>`;
+  info.innerHTML += `Sunrise time: ${floatToTime(sunriseTimeAsFloat)}<br>`;
+  info.innerHTML += `Sunset time: ${floatToTime(sunsetTimeAsFloat)}<br>`;
 
   info.innerHTML += `Sunlight duration: ${sunlightDuration}<br>`;
 
@@ -526,6 +371,16 @@ function floatToTime(floatTime) {
   return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(
     seconds
   )}`;
+}
+
+function floatToObject(floatTime) {
+  timeInSeconds = parseInt(floatTime * 86400, 10);
+
+  hours = Math.floor(timeInSeconds / 3600);
+  minutes = Math.floor((timeInSeconds - hours * 3600) / 60);
+  seconds = timeInSeconds - hours * 3600 - minutes * 60;
+
+  return { hours: hours, minutes: minutes, seconds: seconds };
 }
 
 function formatNumber(number) {

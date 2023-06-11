@@ -1,40 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>Clock</title>
-<meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no'/>
-<meta name="description" content="">
-<meta name="keywords" content="">
-<link href="style.css" type="text/css" rel="stylesheet">
-</head>
-<body id="theBod" onload="display_ct();">
-    
-<p id="Clock"></p>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Clock</title>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="style.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body id="theBod" onload="display_ct();">
+    <p id="Clock"></p>
 
-<button id="toggleDebug" onclick="displayDebug()">Debug</button>
-<p id="dState"></p>
+    <button id="toggleDebug" onclick="displayDebug()">Debug</button>
+    <p id="dState"></p>
 
-<div id="debug">
-<p>DEBUGGING AREA</p>
-<button onclick="displayAnimationName()"> Display current animation name</button>
-<button onclick="displayCurrentBackgroundColor()">Display current background color</button>
-<button onclick="switchAnimation('nightTime');">Switch to Nighttime</button>
-<button onclick="switchAnimation('dayTime');">Switch to daytime</button>
-<button onclick="switchAnimation('testDay');">Switch to Full Day</button>
-<button onclick="switchAnimation('sunRise');">Switch to sunrise</button>
-<button onclick="switchAnimation('sunSet');">Switch to sunset</button>
-<button onclick="spawnStar()">Twinkle twinkle</button>
-<button onclick="sunCalc()">Equate time!</button>
+    <div id="debug">
+      <p>DEBUGGING AREA</p>
+      <button onclick="displayAnimationName()">
+        Display current animation name
+      </button>
+      <button onclick="displayCurrentBackgroundColor()">
+        Display current background color
+      </button>
+      <button onclick="switchAnimation('nightTime');">
+        Switch to Nighttime
+      </button>
+      <button onclick="switchAnimation('dayTime');">Switch to daytime</button>
+      <button onclick="switchAnimation('testDay');">Switch to Full Day</button>
+      <button onclick="switchAnimation('sunRise');">Switch to sunrise</button>
+      <button onclick="switchAnimation('sunSet');">Switch to sunset</button>
+      <button onclick="spawnStar()">Twinkle twinkle</button>
+      <button onclick="sunCalculation()">Equate time!</button>
 
-<div><p id="act"></p></div>
-<div>
-    <p id="loc"  >Coords: </p> 
-    <p id="sunCalcVar"></p>
-    <p id="sunCalc2Var"></p>
-</div>
-</div>
-<script src="time.js"></script>
-</body>
+      <div><p id="act"></p></div>
+      <div>
+        <p id="loc">Coords:</p>
+        <p id="sunCalcVar"></p>
+        <p id="sunCalc2Var"></p>
+      </div>
+    </div>
+    <script src="time.js"></script>
+  </body>
 </html>
