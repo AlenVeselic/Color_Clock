@@ -14,6 +14,8 @@ body {
   animation-name: testDay;
   animation-duration: 30s;
   animation-iteration-count: infinite;
+
+  margin: 0;
 }
 
 /* Full day test animation */
@@ -200,11 +202,23 @@ p {
   font-size: 25px;
 }
 
+.clock-container {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+
+  height: 100vh;
+}
+
 #Clock {
   position: absolute;
-  left: 50%;
-  top: 30%;
+  width: 100vw;
+  text-align: center;
   font-size: 200%;
+
+  margin: 0;
 }
 
 p#act {
