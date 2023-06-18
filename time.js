@@ -149,10 +149,8 @@ function displayDebug() {
   debugState = window.getComputedStyle(debugEl).getPropertyValue("display");
   if (debugState == "none") {
     debugEl.style.display = "block";
-    document.getElementById("dState").innerHTML = "enabled";
   } else {
     debugEl.style.display = "none";
-    document.getElementById("dState").innerHTML = "";
   }
 }
 
