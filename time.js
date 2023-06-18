@@ -46,8 +46,17 @@ function displayCurrentBackgroundColor() {
 }
 
 function switchAnimation(toThis) {
-  bod = document.getElementsByTagName("body")[0];
-  bod.style.animationName = toThis;
+  body = document.getElementsByTagName("body")[0];
+  console.log("Setting animation to switch to ", toThis);
+  body.addEventListener(
+    "animationiteration",
+    function changeAnimationTo() {
+      console.log("Animation ended!!!!");
+      this.style.animationName = toThis;
+      this.removeEventListener("animationiteration", changeAnimationTo);
+    },
+    false
+  );
 }
 
 function animationSwitcher(cuTime) {
@@ -62,17 +71,34 @@ function animationSwitcher(cuTime) {
   clockStart = new Date();
   clockStart.setHours(0, 0, 0);
 
-  if (betweenTime(cuTime, sunriseTime, dayTime)) switchAnimation("sunRise");
-
-  if (betweenTime(cuTime, dayTime, sunsetTime)) switchAnimation("dayTime");
-
-  if (betweenTime(cuTime, sunsetTime, nightTime)) switchAnimation("sunSet");
+  if (
+    betweenTime(cuTime, sunriseTime, dayTime) &&
+    isAnimationAlreadySet("sunRise")
+  )
+    switchAnimation("sunRise");
 
   if (
-    betweenTime(cuTime, nightTime, clockEnd) ||
-    betweenTime(cuTime, clockStart, sunriseTime)
+    betweenTime(cuTime, dayTime, sunsetTime) &&
+    isAnimationAlreadySet("dayTime")
+  )
+    switchAnimation("dayTime");
+
+  if (
+    betweenTime(cuTime, sunsetTime, nightTime) &&
+    isAnimationAlreadySet("sunSet")
+  )
+    switchAnimation("sunSet");
+
+  if (
+    (betweenTime(cuTime, nightTime, clockEnd) ||
+      betweenTime(cuTime, clockStart, sunriseTime)) &&
+    isAnimationAlreadySet("nightTime")
   )
     switchAnimation("nightTime");
+}
+
+function isAnimationAlreadySet(animationName) {
+  return getBodyAttr("animation-name") != animationName;
 }
 
 function betweenTime(curDate, befTime, aftTime) {
@@ -126,7 +152,7 @@ function displayDebug() {
     document.getElementById("dState").innerHTML = "enabled";
   } else {
     debugEl.style.display = "none";
-    document.getElementById("dState").innerHTML = "disabled";
+    document.getElementById("dState").innerHTML = "";
   }
 }
 
