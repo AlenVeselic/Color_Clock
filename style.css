@@ -199,6 +199,8 @@ body {
 }
 p {
   color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
   font-size: 25px;
 }
 
@@ -219,6 +221,8 @@ p {
   font-size: 200%;
 
   margin: 0;
+
+  font-family: "Kelly Slab", cursive;
 }
 
 p#act {
@@ -226,7 +230,13 @@ p#act {
 }
 #debug p {
   position: initial;
-  font-size: 11px;
+  font-size: 10px;
+
+  margin: 0;
+}
+
+#debug button {
+  font-size: 10px;
 }
 
 p#dState {
