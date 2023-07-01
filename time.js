@@ -3,27 +3,49 @@ let dayTime = new Date();
 let sunsetTime = new Date();
 let nightTime = new Date();
 
+let animationHasBeenSetThisMinute = 0;
+
+const animations = {
+  sunrise: "sunRise",
+  daytime: "dayTime",
+  sunset: "sunSet",
+  nighttime: "nightTime",
+};
+
+const animationOrder = [
+  animations.sunrise,
+  animations.daytime,
+  animations.sunset,
+  animations.nighttime,
+];
+
+let animationQueue = [];
+
 function display_c() {
   var refresh = 1000;
   mytime = setTimeout("display_ct()", refresh);
 }
 
 function display_ct() {
-  var x = new Date();
+  const currentTime = new Date();
+  let formatedTime = "";
   //var formatX=x.getHours()+":"+x.getMinutes()+":"+x.getSeconds();
 
-  if (x.getHours() < 10) formatX = "0" + x.getHours() + ":";
-  else formatX = x.getHours() + ":";
+  if (currentTime.getHours() < 10)
+    formatedTime = "0" + currentTime.getHours() + ":";
+  else formatedTime = currentTime.getHours() + ":";
 
-  if (x.getMinutes() < 10) formatX += "0" + x.getMinutes() + ":";
-  else formatX += x.getMinutes() + ":";
+  if (currentTime.getMinutes() < 10)
+    formatedTime += "0" + currentTime.getMinutes() + ":";
+  else formatedTime += currentTime.getMinutes() + ":";
 
-  if (x.getSeconds() < 10) formatX += "0" + x.getSeconds();
-  else formatX += x.getSeconds();
+  if (currentTime.getSeconds() < 10)
+    formatedTime += "0" + currentTime.getSeconds();
+  else formatedTime += currentTime.getSeconds();
 
-  document.getElementById("Clock").innerHTML = formatX;
-  goAct(x);
-  animationSwitcher(x);
+  document.getElementById("Clock").innerHTML = formatedTime;
+  goAct(currentTime);
+  animationSwitcher(null, currentTime);
   display_c();
 }
 
@@ -36,13 +58,15 @@ function getBodyAttr(attr) {
 }
 
 function displayAnimationName() {
-  name = getBodyAttr("animation-name");
-  alert(name);
+  alert(getCurrentAnimationName());
+}
+
+function getCurrentAnimationName() {
+  return getBodyAttr("animation-name");
 }
 
 function displayCurrentBackgroundColor() {
-  color = getBodyAttr("background-color");
-  alert(color);
+  alert(getBodyAttr("background-color"));
 }
 
 function switchAnimation(toThis) {
@@ -59,7 +83,7 @@ function switchAnimation(toThis) {
   );
 }
 
-function animationSwitcher(cuTime) {
+function animationSwitcher(manualAnimationToSet, cuTime) {
   // sunriseTime.setHours(11, 57, 0);
   // dayTime.setHours(11, 57, 30);
   // sunsetTime.setHours(17, 36, 0);
@@ -71,41 +95,69 @@ function animationSwitcher(cuTime) {
   clockStart = new Date();
   clockStart.setHours(0, 0, 0);
 
-  if (
-    betweenTime(cuTime, sunriseTime, dayTime) &&
-    isAnimationAlreadySet("sunRise")
-  )
-    switchAnimation("sunRise");
+  const animationToSet = manualAnimationToSet
+    ? manualAnimationToSet
+    : getCurrentAnimationFromTime(cuTime);
 
-  if (
-    betweenTime(cuTime, dayTime, sunsetTime) &&
-    isAnimationAlreadySet("dayTime")
-  )
-    switchAnimation("dayTime");
+  console.log("Current animation ", getCurrentAnimationName());
+  queueIsset = animationQueue.length > 0;
+  console.log("Is queue set? ", queueIsset);
+  if (!queueIsset && getCurrentAnimationName() != getCurrentAnimationFromTime())
+    queueAnimations(animationToSet);
 
-  if (
-    betweenTime(cuTime, sunsetTime, nightTime) &&
-    isAnimationAlreadySet("sunSet")
-  )
-    switchAnimation("sunSet");
+  console.log("Final animation ", animationToSet);
+  console.log(
+    "Is queue set and has a minute passed? ",
+    queueIsset && !animationHasBeenSetThisMinute
+  );
+  if (queueIsset && !animationHasBeenSetThisMinute) {
+    switchAnimation(animationQueue[0]);
+    animationQueue.shift();
+    animationHasBeenSetThisMinute = 60;
+  }
 
-  if (
-    (betweenTime(cuTime, nightTime, clockEnd) ||
-      betweenTime(cuTime, clockStart, sunriseTime)) &&
-    isAnimationAlreadySet("nightTime")
-  )
-    switchAnimation("nightTime");
+  if (animationHasBeenSetThisMinute)
+    animationHasBeenSetThisMinute = animationHasBeenSetThisMinute - 1;
+}
+
+function queueAnimations(animationToSet) {
+  const currentAnimation = getCurrentAnimationName();
+  let currentAnimationIndex = animationOrder.indexOf(currentAnimation);
+  const nextAnimationIndex = animationOrder.indexOf(animationToSet);
+
+  if (currentAnimationIndex > nextAnimationIndex) {
+    animationQueue.push(
+      ...animationOrder.slice(currentAnimationIndex + 1, animationOrder[-1])
+    );
+    animationQueue.push(...animationOrder.slice(0, nextAnimationIndex + 1));
+  } else {
+    animationQueue.push(
+      ...animationOrder.slice(currentAnimationIndex + 1, nextAnimationIndex + 1)
+    );
+  }
+  console.log(animationQueue);
 }
 
 function isAnimationAlreadySet(animationName) {
   return getBodyAttr("animation-name") != animationName;
 }
 
-function betweenTime(curDate, befTime, aftTime) {
+function betweenTime(befTime, curDate, aftTime) {
   if (befTime <= curDate && curDate <= aftTime) {
     return true;
   }
   return false;
+}
+
+function getCurrentAnimationFromTime(cuTime) {
+  if (betweenTime(sunriseTime, cuTime, dayTime)) return animations.sunrise;
+  if (betweenTime(dayTime, cuTime, sunsetTime)) return animations.daytime;
+  if (betweenTime(sunsetTime, cuTime, nightTime)) return animations.sunset;
+  if (
+    betweenTime(nightTime, cuTime, clockEnd) ||
+    betweenTime(clockStart, cuTime, sunriseTime)
+  )
+    return animations.nighttime;
 }
 
 function goAct(curTime) {

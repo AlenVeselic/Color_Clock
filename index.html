@@ -23,6 +23,42 @@
       <p id="Clock"></p>
     </div>
 
+    <!--   77, 327,109, 841, 2319, 5032, 1094, 892, 6739, 512, 84 -->
+    <svg width="0" height="0">
+      <!--Top Layer-->
+      <filter id="filter-back">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.012"
+          numOctaves="4"
+          seed="0"
+        />
+        <feDisplacementMap in="SourceGraphic" scale="170" />
+      </filter>
+      <filter id="filter-mid">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.012"
+          numOctaves="2"
+          seed="0"
+        />
+        <feDisplacementMap in="SourceGraphic" scale="150" />
+      </filter>
+      <filter id="filter-front">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.012"
+          numOctaves="2"
+          seed="0"
+        />
+        <feDisplacementMap in="SourceGraphic" scale="100" />
+      </filter>
+    </svg>
+
+    <div class="cloud" id="cloud-back"></div>
+    <div class="cloud" id="cloud-mid"></div>
+    <div class="cloud" id="cloud-front"></div>
+
     <button id="toggleDebug" onclick="displayDebug()">Debug</button>
 
     <div id="debug">
@@ -33,13 +69,15 @@
       <button onclick="displayCurrentBackgroundColor()">
         Display current background color
       </button>
-      <button onclick="switchAnimation('nightTime');">
+      <button onclick="animationSwitcher('nightTime');">
         Switch to Nighttime
       </button>
-      <button onclick="switchAnimation('dayTime');">Switch to daytime</button>
-      <button onclick="switchAnimation('testDay');">Switch to Full Day</button>
-      <button onclick="switchAnimation('sunRise');">Switch to sunrise</button>
-      <button onclick="switchAnimation('sunSet');">Switch to sunset</button>
+      <button onclick="animationSwitcher('dayTime');">Switch to daytime</button>
+      <button onclick="animationSwitcher('testDay');">
+        Switch to Full Day
+      </button>
+      <button onclick="animationSwitcher('sunRise');">Switch to sunrise</button>
+      <button onclick="animationSwitcher('sunSet');">Switch to sunset</button>
       <button onclick="spawnStar()">Twinkle twinkle</button>
       <button onclick="sunCalculation()">Equate time!</button>
 
